@@ -7,8 +7,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
-    
-class Books(models.Model):
+class Book(models.Model):
     image = models.ImageField(upload_to='books/media/uploads/', null=True, blank=True)
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
@@ -19,4 +18,3 @@ class Books(models.Model):
 
     def __str__(self):
         return f"{self.isbn} - {self.title}"
-    
