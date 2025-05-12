@@ -21,7 +21,6 @@ class RegistrationView(APIView):
             username = form._validated_data['username']
             full_name = form._validated_data['full_name']
             password = form._validated_data['password']
-
             phone = form._validated_data['phone']
             email = form._validated_data['email']
             roll = form._validated_data['roll']
@@ -30,27 +29,73 @@ class RegistrationView(APIView):
             address = form._validated_data['address']
             nationality_type = form._validated_data['nationality_type']
             nationality_number = form._validated_data['nationality_number']
+            role = form._validated_data['role']
 
             user =  User.objects.create_user(username=username,password=password,first_name=full_name,email=email)
-            profile = Profile.objects.create(user=user,full_name=full_name,phone=phone,email=email,roll=roll,registration=registration,session=session,address=address,nationality_type=nationality_type,nationality_number=nationality_number)
+            user.is_active = False
+            user.save()
+            profile = Profile.objects.create(user=user,full_name=full_name,phone=phone,email=email,roll=roll,registration=registration,session=session,address=address,nationality_type=nationality_type,nationality_number=nationality_number,role=role)
 
             return Response("Sended Data",status=status.HTTP_201_CREATED)
         return Response("Error",status=status.HTTP_502_BAD_GATEWAY)
     
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+
 class UserLoginView(APIView):
+    
+    @extend_schema(
+        request=UserLoginSerializer,
+        responses=OpenApiTypes.OBJECT,  # You can also use a response serializer here
+        tags=["User"],
+        operation_id="user_login_create",
+        description="Log in a user and return auth token + user ID"
+    )
+
     def post(self,request):
         serializer = UserLoginSerializer(data=self.request.data)
         if serializer.is_valid():
             user = serializer._validated_data['user']
             if user:
                 token , _ = Token.objects.get_or_create(user=user)
-                login(request,user) 
+                login(request,user)
 
                 return Response({"token":token.key,"user_id":user.id, })
             else:
                 return Response({"error":"Invalid Credential"})
         return Response(serializer.errors)
 
+class UserLogoutView(APIView):
+    @extend_schema(
+        request={
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'token_id': {'type': 'string', 'example': '123abc...'}
+                },
+                'required': ['token_id']
+            }
+        },
+        responses={200: {"message": "Successfully logged out"}, 400: {"error": "Invalid token_id"}},
+        tags=["Authentication"],
+        description="Logs out a user by deleting their token using the provided `token_id`.",
+        summary="Logout user"
+    )
+    
+    def post(self, request):
+        token_id = request.data.get('token_id')
+
+        if not token_id:
+            return Response({'error': 'token_id is required'}, status=status.HTTP_400_BAD_REQUEST) 
+        try:
+            token = Token.objects.get(key=token_id)
+            user = token.user 
+            token.delete() 
+            logout(request) 
+            return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK) 
+        except Token.DoesNotExist:
+            return Response({'error': 'Invalid token_id'}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 # from rest_framework.authtoken.models import Token
 # from rest_framework.decorators import api_view, permission_classes
@@ -79,7 +124,6 @@ class UserLoginView(APIView):
 #     token, created = Token.objects.get_or_create(user=user)
 
 #     return Response({"token": token.key}, status=status.HTTP_200_OK)
-
 
 
 class ProfileSerializerView(viewsets.ModelViewSet):

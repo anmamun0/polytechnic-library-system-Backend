@@ -7,9 +7,10 @@ from .models import Profile
 class RegistrationSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     password = serializers.CharField()
+    
     class Meta:
         model = Profile
-        fields = ['username','full_name','password','email','phone','roll','registration','session','address','nationality_type','nationality_number']
+        fields = ['username','full_name','password','email','phone','roll','registration','session','address','nationality_type','nationality_number','role']
 
 
 class UserLoginSerializer(serializers.Serializer):
