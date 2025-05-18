@@ -12,6 +12,9 @@ from django.contrib.auth import login, authenticate,logout
 
 from .serializers import ProfileSerializers
 from .models import Profile
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+
 
 class RegistrationView(APIView):
     serializer_class = RegistrationSerializer
@@ -26,6 +29,7 @@ class RegistrationView(APIView):
             roll = form._validated_data['roll']
             registration = form._validated_data['registration']
             session = form._validated_data['session']
+            department = form._validated_data['department']
             address = form._validated_data['address']
             nationality_type = form._validated_data['nationality_type']
             nationality_number = form._validated_data['nationality_number']
@@ -34,9 +38,13 @@ class RegistrationView(APIView):
             user =  User.objects.create_user(username=username,password=password,first_name=full_name,email=email)
             user.is_active = False
             user.save()
-            profile = Profile.objects.create(user=user,full_name=full_name,phone=phone,email=email,roll=roll,registration=registration,session=session,address=address,nationality_type=nationality_type,nationality_number=nationality_number,role=role)
-
+            profile = Profile.objects.create(user=user,full_name=full_name,phone=phone,email=email,roll=roll,registration=registration,session=session,department=department,address=address,nationality_type=nationality_type,nationality_number=nationality_number,role=role)
+            
+            from core.emails import Registration_received
+            Registration_received(user,profile)
+            
             return Response("Sended Data",status=status.HTTP_201_CREATED)
+        
         return Response("Error",status=status.HTTP_502_BAD_GATEWAY)
     
 from drf_spectacular.utils import extend_schema
@@ -57,10 +65,10 @@ class UserLoginView(APIView):
         if serializer.is_valid():
             user = serializer._validated_data['user']
             if user:
+                profile = Profile.objects.get(user=user)
                 token , _ = Token.objects.get_or_create(user=user)
                 login(request,user)
-
-                return Response({"token":token.key,"user_id":user.id, })
+                return Response({"token_id":token.key,"profile_id":profile.id, })
             else:
                 return Response({"error":"Invalid Credential"})
         return Response(serializer.errors)

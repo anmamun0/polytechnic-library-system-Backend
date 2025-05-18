@@ -15,35 +15,62 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import dj_database_url 
+import environ
+env = environ.Env()
+environ.Env.read_env()
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e+37!qru(mbfpfo$@^4o9p6x=qclf#gs_c7g=jg*^1q%yv1h@+'
+# SECRET_KEY = 'django-insecure-e+37!qru(mbfpfo$@^4o9p6x=qclf#gs_c7g=jg*^1q%yv1h@+'
+
+SECRET_KEY = env("SPI_LIBRARY_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ 
+ALLOWED_HOSTS = ["*"]
+CORS_ALLOW_ALL_ORIGINS = True 
+ 
+# ------n
+CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://127.0.0.1:5501",  # Frontend URL
+# ]
+CSRF_TRUSTED_ORIGINS = ['https://spi_library.onrender.com','https://*.127.0.0.1','http://127.0.0.1:5501',]
 
-ALLOWED_HOSTS = []
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False 
 
-# Application definition
-
+# Application definition 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'accounts',
     'books',
     'dashboard',
+    'core',
     'transactions',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
+    'django_filters',
 
 ]
  
@@ -58,6 +85,9 @@ REST_FRAMEWORK = {
 
  
 MIDDLEWARE = [
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    'corsheaders.middleware.CorsMiddleware',  
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -85,7 +115,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'polytechnic_library_system.wsgi.application'
+WSGI_APPLICATION = 'polytechnic_library_system.wsgi.app'
 
 
 # Database

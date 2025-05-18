@@ -95,6 +95,7 @@ This project provides authentication and admin dashboard APIs using Django REST 
 | POST   | `/user/login/`       | Login and receive token|  [Example](#login-and-receive-token)|
 | POST   | `/user/logout/`      | Logout and delete token|  [Example](#logout-and-delete-token)|
 
+ 
 ---
 
 ## 🛠️ Admin Dashboard APIs
@@ -105,7 +106,18 @@ This project provides authentication and admin dashboard APIs using Django REST 
 |--------|-----------------------------------------------|--------------------------------------|---------|
 | GET    | `/dashboard/pending_student/`                 | List of pending (inactive) students  | Just View| 
 | GET    | `/dashboard/active_student/`                  | List of active students              | Just View| 
-| PUT    | `/dashboard/active_student/<int:pk>/activate/` | Activate a student by ID (admin only) |  [Example](#activate-a-student-by-id)|
+| PUT    | `/dashboard/active_student/<int:pk>/activate/`| Activate a student by ID (admin only) |  [Example](#activate-a-student-by-id)|
+| PUT    | `/dashboard/active_student/<int:pk>/delete/` | Delete a student by ID (admin only) |  [Example](#delete-a-student-by-id)|
+
+
+### 🔍 Available Student Query Parameters (Filters)
+
+You can filter GET requests to endpoints , using the following query parameters:
+
+`?role=student` , `?phone=017XXXXXXXX`, `?email=user@example.com`, `?registration=123456`,  `?department=CSE`, `?session=20-21`, `?nationality_type=NID`, `?nationality_number=1234567890`, 
+
+<br>
+
 
 ---
 
@@ -135,18 +147,19 @@ Authorization: Token <your_token_here>
 ##  Register a new user
 ```json
 { 
-  "username": "string",
+  "username": "string", unique
   "full_name": "string",
-  "password": "string",
-  "email": "string",
-  "phone": "string",
-  "roll": "string",
-  "registration": "string",
-  "session": "stri",
+  "password": "string", 
+  "email": "string", unique
+  "phone": "string", unique 
+  "roll": "string", unique 
+  "registration": "string", unique
+  "session": "string", 
+  "department": "string",
   "address": "string",
-  "nationality_type": "birth",
-  "nationality_number": "string",
-  "role": "student"
+  "nationality_type": "nid/birth",
+  "nationality_number": "string", unique
+  "role": "student/admin"
 } 
 ```
 
@@ -167,6 +180,14 @@ Authorization: Token <your_token_here>
 ```
 
 ## Activate a student by ID
+
+```json
+{
+  "token_id": "string"
+}
+```
+
+## Delete a student by ID
 
 ```json
 {
