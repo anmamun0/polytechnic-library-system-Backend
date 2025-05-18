@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SPI Library System API</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 40px 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    }
+    h1 {
+      font-size: 32px;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    h3 {
+      color: #333;
+      margin-top: 30px;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .section {
+      margin-top: 30px;
+    }
+    ul {
+      padding-left: 20px;
+      margin-top: 10px;
+    }
+    code {
+      background: #f1f1f1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px 10px 0 0;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .footer {
+      margin-top: 40px;
+      border-top: 1px solid #e1e1e1;
+      padding-top: 20px;
+      font-size: 14px;
+      color: #777;
+    }
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .tech-pill {
+      background-color: #f0f2f5;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 SPI Library System API</h1>
+    <p>
+      Welcome to the official backend of the <strong>Sylhet Polytechnic Institute Library Management System</strong>.
+      This project provides a full RESTful API for managing books, users, and transactions.
+    </p>
+
+    <div class="section">
+      <h3> Quick Access</h3>
+      <a class="btn" href="/api/schema/swagger-ui/" target="_blank">Swagger Docs</a>
+      <a class="btn" href="https://github.com/anmamun0/polytechnic-library-system-Backend" target="_blank">Backend GitHub</a>
+      <a class="btn" href="https://github.com/anmamun0/polytechnic-library-system-Frontend" target="_blank">Frontend GitHub</a>
+      <a class="btn" href="https://spi-library-frontend.vercel.app" target="_blank">Live Frontend</a>
+    </div>
+
+    <div class="section">
+      <h3>API Endpoint Examples</h3>
+      <ul>
+        <li><code>GET /api/books/</code> – Fetch all books</li>
+        <li><code>POST /api/user/register/</code> – Register a new user</li>
+        <li><code>GET /api/transactions/</code> – List all transactions</li>
+        <li><code>GET /api/dashboard/</code> – Admin dashboard overview</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>Tech Stack</h3>
+      <div class="tech-stack">
+        <div class="tech-pill">Django</div>
+        <div class="tech-pill">Django REST Framework</div>
+        <div class="tech-pill">PostgreSQL</div>
+        <div class="tech-pill">Tailwind CSS</div>
+        <div class="tech-pill">React.js</div>
+        <div class="tech-pill">JWT Auth</div>
+        <div class="tech-pill">Render</div>
+        <div class="tech-pill">Vercel</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Developed with ❤️ by <strong>AN Mamun</strong> • 
+      <a href="https://anmamun0.vercel.app" target="_blank">Portfolio</a>
+    </div>
+  </div>
+</body>
+</html>

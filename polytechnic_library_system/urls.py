@@ -23,9 +23,11 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from .view import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home, name='api-home'),
     path('user/',include('accounts.urls')),
     path('dashboard/',include('dashboard.urls')),
 
