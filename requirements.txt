@@ -5,21 +5,12 @@ django-crispy-forms
 crispy-bootstrap5 
 django-filter 
 djangorestframework_simplejwt 
-drf-spectacular 
-
-# PostgreSQL Database Support
-psycopg2-binary 
-
-# Environment Variables Management
-django-environ 
-
-# CAPTCHA
+drf-spectacular  
+psycopg2-binary  
+django-environ  
 django-captcha 
-django-recaptcha 
-
-# Whitenoise for static file serving
-whitenoise 
-
+django-recaptcha  
+whitenoise  
 requests
 pillow 
 pillow_heif 
