@@ -15,4 +15,4 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'polytechnic_library_system.sett
 
 application = get_wsgi_application()
 
-app = application
+ 

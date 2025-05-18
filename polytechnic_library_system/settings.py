@@ -115,7 +115,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'polytechnic_library_system.wsgi.app'
+WSGI_APPLICATION = 'polytechnic_library_system.wsgi.application'
 
 
 # Database
