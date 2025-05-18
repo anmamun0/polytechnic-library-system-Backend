@@ -13,3 +13,5 @@ gunicorn==23.0.0
 drf-spectacular==0.28.0
 sslcommerz-lib==1.0  # Only if you're using this payment gateway
 pillow
+environ
+distlib
