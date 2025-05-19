@@ -87,7 +87,7 @@ This project provides authentication and admin dashboard APIs using Django REST 
 
 ---
 
-> 🔐 Authentication APIs
+## 🔐 Authentication APIs
 
 | Method | Endpoint             | Description            | Example |
 |--------|----------------------|------------------------|---------|
@@ -95,21 +95,62 @@ This project provides authentication and admin dashboard APIs using Django REST 
 | POST   | `/user/login/`       | Login and receive token|  [Example](#login-and-receive-token)|
 | POST   | `/user/logout/`      | Logout and delete token|  [Example](#logout-and-delete-token)|
 
+
  
----
+## Profile APIs Endpoints
 
-## 🛠️ Admin Dashboard APIs
+This API is designed for admin users to manage user profiles securely via Token authentication.
 
-> 🔒 Admin-only access
-> 
-| Method | Endpoint                                      | Description                          | Example |
-|--------|-----------------------------------------------|--------------------------------------|---------|
-| GET    | `/dashboard/pending_student/`                 | List of pending (inactive) students  | Just View| 
-| GET    | `/dashboard/active_student/`                  | List of active students              | Just View| 
-| PUT    | `/dashboard/active_student/<int:pk>/activate/`| Activate a student by ID (admin only) |  [Example](#activate-a-student-by-id)|
-| PUT    | `/dashboard/active_student/<int:pk>/delete/` | Delete a student by ID (admin only) |  [Example](#delete-a-student-by-id)|
+##### 🔐 Token Authentication
+
+For all endpoints, admin authentication is required using the token via:
+
+###### If you're using JavaScript fetch, just set the headers like |  For JWT Authentication
+
+```js
+headers: {
+  'Content-Type': 'application/json',
+  'Authorization': 'Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888'
+}
+```
+ 
+
+| Method | Endpoint                             | Description                    | Example |
+|--------|--------------------------------------|--------------------------------|---------|
+| GET    | `/user/profile/`                     | Get all active profiles        | [Example](#get-all-active-profiles) |
+| GET    | `/user/profile/unactive/`            | Get all inactive profiles(admin)      | [Example](#get-inactive-profiles) |
+| POST   | `/user/profile/`                     | Create a new profile (admin)           | [Example](#create-profile) |
+| PUT    | `/user/profile/<pk>/`                | Fully update a profile (admin)         | [Example](#update-profile) |
+| PATCH  | `/user/profile/<pk>/`                | Partially update a profile (admin)     | [Example](#partial-update-profile) |
+| DELETE | `/user/profile/<pk>/`                | Delete a profile (admin)               | [Example](#delete-profile) |
+| POST   | `/user/profile/<pk>/activate/`       | Activate a deactivated profile (admin)  | [Example](#activate-profile) |
 
 
+##  Books APIs Endpoints
+
+| Method | Endpoint        | Description                      |
+|--------|------------------|----------------------------------|
+| GET    | `/book/books/`         | Get all books                    |
+| POST   | `/book/books/`         | Create a new book (admin)        | 
+| PUT    | `/book/books/<pk>/`    | Fully update a book (admin)      |
+| PATCH  | `/book/books/<pk>/`    | Partially update a book (admin)  |
+| DELETE | `/book/books/<pk>/`    | Delete a book (admin)            |
+
+
+## Categories APIs Endpoints 
+
+| Method | Endpoint            | Description                          | 
+|--------|---------------------|--------------------------------------| 
+| GET    | `/category/`        | Get all categories                   | 
+| GET    | `/category/<pk>/`   | Get a specific category              | 
+| POST   | `/category/`        | Create a new category (admin)        | 
+| PUT    | `/category/<pk>/`   | Fully update a category (admin)      | 
+| PATCH  | `/category/<pk>/`   | Partially update a category (admin)  | 
+| DELETE | `/category/<pk>/`   | Delete a category (admin)            | 
+
+
+  
+ 
 ### 🔍 Available Student Query Parameters (Filters)
 
 You can filter GET requests to endpoints , using the following query parameters:

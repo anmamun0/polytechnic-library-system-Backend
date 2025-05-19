@@ -14,11 +14,11 @@ class Book(models.Model):
     isbn = models.CharField(max_length=13, unique=True)  # Unique ISBN number
     category = models.ManyToManyField(Category, blank=True,related_name='books') 
     language = models.CharField(max_length=50,default='Bangla', blank=True, null=True)
-
+    
     description = models.TextField() 
     copies = models.IntegerField(default=0)  
     available = models.IntegerField(default=0)  
-     
+    
 
     def __str__(self):
         return f"{self.isbn} - {self.title}"

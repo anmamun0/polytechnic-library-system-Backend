@@ -21,23 +21,7 @@ class PendingStudentListView(ModelViewSet):
     filter_backends = (rest_framework.DjangoFilterBackend,)
     filterset_class = StudentFilter
 
-    @extend_schema(
-        methods=["PUT"],
-        parameters=[
-            OpenApiParameter(name='pk', description='Profile ID', required=True, type=int, location=OpenApiParameter.PATH),
-        ],
-        request={
-            "application/json": {
-                "type": "object",
-                "properties": {
-                    "token_id": {"type": "string", "description": "Admin's auth token"}
-                },
-                "required": ["token_id"]
-            }
-        },
-        responses={200: OpenApiExample("User Activated", value={"message": "User activated successfully"})}
-    )
-
+ 
     @action(detail=True, methods=['put'], url_path='activate')
     def activate_user(self, request, pk=None):
         token_id = request.data.get('token_id')

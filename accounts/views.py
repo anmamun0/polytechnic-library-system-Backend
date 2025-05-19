@@ -51,15 +51,6 @@ from drf_spectacular.utils import extend_schema
 from drf_spectacular.types import OpenApiTypes
 
 class UserLoginView(APIView):
-    
-    @extend_schema(
-        request=UserLoginSerializer,
-        responses=OpenApiTypes.OBJECT,  # You can also use a response serializer here
-        tags=["User"],
-        operation_id="user_login_create",
-        description="Log in a user and return auth token + user ID"
-    )
-
     def post(self,request):
         serializer = UserLoginSerializer(data=self.request.data)
         if serializer.is_valid():
@@ -74,22 +65,6 @@ class UserLoginView(APIView):
         return Response(serializer.errors)
 
 class UserLogoutView(APIView):
-    @extend_schema(
-        request={
-            'application/json': {
-                'type': 'object',
-                'properties': {
-                    'token_id': {'type': 'string', 'example': '123abc...'}
-                },
-                'required': ['token_id']
-            }
-        },
-        responses={200: {"message": "Successfully logged out"}, 400: {"error": "Invalid token_id"}},
-        tags=["Authentication"],
-        description="Logs out a user by deleting their token using the provided `token_id`.",
-        summary="Logout user"
-    )
-    
     def post(self, request):
         token_id = request.data.get('token_id')
 
@@ -134,9 +109,52 @@ class UserLogoutView(APIView):
 #     return Response({"token": token.key}, status=status.HTTP_200_OK)
 
 
-class ProfileSerializerView(viewsets.ModelViewSet):
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
+
+from core.permissions import CustomAdminTokenCheckMixin
+
+class ProfileSerializerView(CustomAdminTokenCheckMixin, ModelViewSet):
     serializer_class = ProfileSerializers
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.filter(user__is_active=True)
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        # Centralized permission check for write operations
+        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
+            if not self.is_admin(request):
+                raise PermissionDenied(detail='Only admins can perform this action.')
+
+    @action(detail=False, methods=['get'], url_path='unactive')
+    def get_unactive_profiles(self, request):
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+
+        profiles = Profile.objects.filter(user__is_active=False)
+        serializer = self.get_serializer(profiles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], url_path='activate')
+    def activate_profile(self, request, pk=None):
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            profile = Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            return Response({'detail': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        user = profile.user
+        user.is_active = True
+        user.save()
+
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    
+
+
 
 from django.http import HttpResponse,JsonResponse
 from rest_framework import response

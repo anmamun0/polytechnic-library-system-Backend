@@ -43,6 +43,13 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = ['https://spi-library.onrender.com','https://*.127.0.0.1','http://127.0.0.1:5501',]
 
+# Add this import at the top of settings.py
+# from corsheaders.defaults import default_headers
+ 
+# CORS_ALLOW_HEADERS = list(default_headers) + [
+#     'token_id',
+# ]
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
