@@ -40,7 +40,8 @@ CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOWED_ORIGINS = [
 #     "http://127.0.0.1:5501",  # Frontend URL
 # ]
-CSRF_TRUSTED_ORIGINS = ['https://spi_library.onrender.com','https://*.127.0.0.1','http://127.0.0.1:5501',]
+
+CSRF_TRUSTED_ORIGINS = ['https://spi-library.onrender.com','https://*.127.0.0.1','http://127.0.0.1:5501',]
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -71,7 +72,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_spectacular',
     'django_filters',
-
 ]
  
 
@@ -117,7 +117,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'polytechnic_library_system.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -129,14 +128,14 @@ WSGI_APPLICATION = 'polytechnic_library_system.wsgi.application'
 # }
 
 
-#  Wazid's Project  
+# Prachurjya - https://spi-library.onrender.com/
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
-        'USER': 'postgres.mvdxkgdlxhjgmeyvaixz',
-        'PASSWORD': 'wazed567@#.',
+        'USER': 'postgres.yuapcqptunhybzgemmsp',
+        'PASSWORD': '@Prachurjya',
         'HOST': 'aws-0-ap-southeast-1.pooler.supabase.com',
         'PORT': '6543',
     }
