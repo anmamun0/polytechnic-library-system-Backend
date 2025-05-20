@@ -10,35 +10,38 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Profile
-        fields = ['username','full_name','password','email','phone','roll','registration','session','department','address','nationality_type','nationality_number','role']
+        fields = ['username','full_name','password','email','phone','roll','registration','session','department','address','blood','nationality_type','nationality_number','role']
 
 
 class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
-    password = serializers.CharField(required=True) 
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
 
     def validate(self, attrs):
-        username = attrs.get('username')
-        password = attrs.get('password')
-        print(username,password)
-    
+        email = attrs.get('email')
+        password = attrs.get('password')  
+        print(email,' - ' , password)
+        # Check if user with this email exists
         try:
-            user =  User.objects.get(username=username) 
-        except Exception as e:
-            raise serializers.ValidationError("The emal not exist any user")
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No user is registered with this email.")
         
-        user = authenticate(username=username,password=password)
+        user = authenticate(username=user.username, password=password)
+        print(user.username)
+
         if not user:
-            raise serializers.ValidationError('Inalid User')
+            raise serializers.ValidationError("Invalid email or password.")
         if not user.is_active:
-            raise serializers.ValidationError('User account is inactive!')
-         
+            raise serializers.ValidationError("User account is inactive.")
+
         attrs['user'] = user
         return attrs
-
  
 class ProfileSerializers(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
+  
+
     class Meta:
         model = Profile
-        fields = ['id','user','full_name','role','email','phone','roll','registration','session','address','nationality_type','nationality_number']
+        fields =  "__all__"

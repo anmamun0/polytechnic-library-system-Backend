@@ -11,11 +11,16 @@ from accounts.models import Profile  # adjust if your Profile model is elsewhere
 from core.permissions import CustomAdminTokenCheckMixin
 
 from rest_framework.exceptions import PermissionDenied
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import BookFilter
+
 
 class BookViewSet(CustomAdminTokenCheckMixin, ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = BookFilter
+    
     def initial(self, request, *args, **kwargs):
         super().initial(request, *args, **kwargs) 
         # Only check admin for write operations (POST, PATCH)

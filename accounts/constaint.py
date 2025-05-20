@@ -4,6 +4,17 @@ USER_ROLE = (
 )
 
 NATIONALITY = (
-    ('birth','birth'),
-    ('nid','nid')
+    ('BIRTH','BIRTH'),
+    ('NID','NID')
+)
+
+STATUS_BLOOD = (
+    ('A+','A+'),
+    ('A-','A-'),
+    ('B+','B+'),
+    ('B-','B-'),
+    ('AB+','AB+'),
+    ('AB-','AB-'),
+    ('O+','O+'),
+    ('O-','O-'),
 )

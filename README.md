@@ -91,7 +91,7 @@ This project provides authentication and admin dashboard APIs using Django REST 
 
 | Method | Endpoint             | Description            | Example |
 |--------|----------------------|------------------------|---------|
-| POST   | `/user/register/`    | Register a new user    |  [Example](#register-a-new-user)|
+| POST   | `/user/register/`    | Register a new user (get-notification)     |  [Example](#register-a-new-user)|
 | POST   | `/user/login/`       | Login and receive token|  [Example](#login-and-receive-token)|
 | POST   | `/user/logout/`      | Logout and delete token|  [Example](#logout-and-delete-token)|
 
@@ -110,7 +110,7 @@ For all endpoints, admin authentication is required using the token via:
 ```js
 headers: {
   'Content-Type': 'application/json',
-  'Authorization': 'Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888'
+  'Authorization': 'Token ecb093d6304e1ce411b7cbfabeb4f44a846e08d8'
 }
 ```
  
@@ -123,7 +123,7 @@ headers: {
 | PUT    | `/user/profile/<pk>/`                | Fully update a profile (admin)         | [Example](#update-profile) |
 | PATCH  | `/user/profile/<pk>/`                | Partially update a profile (admin)     | [Example](#partial-update-profile) |
 | DELETE | `/user/profile/<pk>/`                | Delete a profile (admin)               | [Example](#delete-profile) |
-| POST   | `/user/profile/<pk>/activate/`       | Activate a deactivated profile (admin)  | [Example](#activate-profile) |
+| POST   | `/user/profile/<pk>/activate/`       | Activate a deactivated profile (admin)(get-notification)  | [Example](#activate-profile) |
 
 
 ##  Books APIs Endpoints
@@ -198,6 +198,7 @@ Authorization: Token <your_token_here>
   "session": "string", 
   "department": "string",
   "address": "string",
+  "blood": "string",
   "nationality_type": "nid/birth",
   "nationality_number": "string", unique
   "role": "student/admin"
@@ -219,19 +220,51 @@ Authorization: Token <your_token_here>
   "token_id": "string"
 }
 ```
+ 
 
-## Activate a student by ID
-
-```json
-{
-  "token_id": "string"
-}
-```
-
-## Delete a student by ID
+ ## Profile 
 
 ```json
-{
-  "token_id": "string"
-}
+    {
+        "id": 1,
+        "user": "anmamun0",
+        "full_name": "Nur Mohummod Al Mamun",
+        "role": "admin",
+        "email": "almamun20044@gmail.com",
+        "phone": "01782059949",
+        "roll": "676229",
+        "registration": "1502221113",
+        "session": "2122",
+        "address": "Sylhet, Bangladesh - Bangladesh",
+        "blood": "O+",
+        "nationality_type": "birth",
+        "nationality_number": "12345678909876543"
+    }
 ```
+
+ ## Category
+```json
+{
+        "id": 1,
+        "name": "Python Programming-hero",
+        "slug": "python-programming"
+    }
+```
+
+
+ ## Category model
+ 
+ ```json
+{
+    "id": 1,
+    "category": [],
+    "image": "https://anmamun0.vercel.app/",
+    "title": "Updated -2",
+    "author": "hero",
+    "isbn": "01",
+    "language": "Bangla",
+    "description": "asdf",
+    "copies": 10,
+    "available": 3
+}
+ ```

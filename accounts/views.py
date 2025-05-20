@@ -15,12 +15,14 @@ from .models import Profile
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 
+from rest_framework.authentication import get_authorization_header
+
 
 class RegistrationView(APIView):
     serializer_class = RegistrationSerializer
     def post(self,request):
         form = self.serializer_class(data=request.data)
-        if form.is_valid():
+        if form.is_valid(): 
             username = form._validated_data['username']
             full_name = form._validated_data['full_name']
             password = form._validated_data['password']
@@ -31,6 +33,7 @@ class RegistrationView(APIView):
             session = form._validated_data['session']
             department = form._validated_data['department']
             address = form._validated_data['address']
+            blood = form._validated_data['blood']
             nationality_type = form._validated_data['nationality_type']
             nationality_number = form._validated_data['nationality_number']
             role = form._validated_data['role']
@@ -38,7 +41,7 @@ class RegistrationView(APIView):
             user =  User.objects.create_user(username=username,password=password,first_name=full_name,email=email)
             user.is_active = False
             user.save()
-            profile = Profile.objects.create(user=user,full_name=full_name,phone=phone,email=email,roll=roll,registration=registration,session=session,department=department,address=address,nationality_type=nationality_type,nationality_number=nationality_number,role=role)
+            profile = Profile.objects.create(user=user,full_name=full_name,phone=phone,email=email,roll=roll,registration=registration,session=session,department=department,address=address,blood=blood,nationality_type=nationality_type,nationality_number=nationality_number,role=role)
             
             from core.emails import Registration_received
             Registration_received(user,profile)
@@ -51,34 +54,127 @@ from drf_spectacular.utils import extend_schema
 from drf_spectacular.types import OpenApiTypes
 
 class UserLoginView(APIView):
-    def post(self,request):
-        serializer = UserLoginSerializer(data=self.request.data)
+    def post(self, request):
+        serializer = UserLoginSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            user = serializer._validated_data['user']
-            if user:
-                profile = Profile.objects.get(user=user)
-                token , _ = Token.objects.get_or_create(user=user)
-                login(request,user)
-                return Response({"token_id":token.key,"profile_id":profile.id, })
-            else:
-                return Response({"error":"Invalid Credential"})
-        return Response(serializer.errors)
-
+            user = serializer.validated_data['user']
+            profile = Profile.objects.get(user=user)
+            token, _ = Token.objects.get_or_create(user=user)
+            login(request, user)
+            
+            return Response({
+                "token_id": token.key,
+                "profile_id": profile.id,
+            }, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  
 class UserLogoutView(APIView):
     def post(self, request):
-        token_id = request.data.get('token_id')
+        auth_header = get_authorization_header(request).decode('utf-8')
 
-        if not token_id:
-            return Response({'error': 'token_id is required'}, status=status.HTTP_400_BAD_REQUEST) 
+        if not auth_header.startswith('Token '):
+            return Response({'error': 'Authorization header must start with Token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        token_key = auth_header.split(' ')[1]
+
         try:
-            token = Token.objects.get(key=token_id)
-            user = token.user 
-            token.delete() 
-            logout(request) 
-            return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK) 
+            token = Token.objects.get(key=token_key)
+            user = token.user
+            token.delete()
+            logout(request)
+            return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
         except Token.DoesNotExist:
-            return Response({'error': 'Invalid token_id'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
         
+
+
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
+
+from core.permissions import CustomAdminTokenCheckMixin
+
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import ProfileFilter
+
+class ProfileSerializerView(CustomAdminTokenCheckMixin, ModelViewSet):
+    serializer_class = ProfileSerializers
+    queryset = Profile.objects.filter(user__is_active=True)
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProfileFilter
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        # Centralized permission check for write operations
+        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
+            if not self.is_admin(request):
+                raise PermissionDenied(detail='Only admins can perform this action.')
+
+    @action(detail=False, methods=['get'], url_path='unactive')
+    def get_unactive_profiles(self, request):
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+
+        profiles = Profile.objects.filter(user__is_active=False)
+        serializer = self.get_serializer(profiles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], url_path='activate')
+    def activate_profile(self, request, pk=None):
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            profile = Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            return Response({'detail': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        user = profile.user
+
+        from core.emails import Account_verified
+        Account_verified(user,profile)
+        
+        user.is_active = True
+        user.save()
+        
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    
+
+
+
+from django.http import HttpResponse,JsonResponse
+from rest_framework import response
+import requests
+
+def third_party_api(request):
+    context = requests.get('https://alfa-leetcode-api.onrender.com/anmamun0')
+    
+    return JsonResponse(data=context.json(),safe=False)
+
+
+
+
+# from django.http import HttpResponse,JsonResponse
+# from rest_framework import response,status
+# from rest_framework.decorators import api_view
+
+
+# @api_view(['GET'])
+# def third_party_api(request):
+#     return response.Response('Hello how are you',status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
 
 # from rest_framework.authtoken.models import Token
 # from rest_framework.decorators import api_view, permission_classes
@@ -107,72 +203,3 @@ class UserLogoutView(APIView):
 #     token, created = Token.objects.get_or_create(user=user)
 
 #     return Response({"token": token.key}, status=status.HTTP_200_OK)
-
-
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
-
-from core.permissions import CustomAdminTokenCheckMixin
-
-class ProfileSerializerView(CustomAdminTokenCheckMixin, ModelViewSet):
-    serializer_class = ProfileSerializers
-    queryset = Profile.objects.filter(user__is_active=True)
-
-    def initial(self, request, *args, **kwargs):
-        super().initial(request, *args, **kwargs)
-        # Centralized permission check for write operations
-        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
-            if not self.is_admin(request):
-                raise PermissionDenied(detail='Only admins can perform this action.')
-
-    @action(detail=False, methods=['get'], url_path='unactive')
-    def get_unactive_profiles(self, request):
-        if not self.is_admin(request):
-            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
-
-        profiles = Profile.objects.filter(user__is_active=False)
-        serializer = self.get_serializer(profiles, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=['post'], url_path='activate')
-    def activate_profile(self, request, pk=None):
-        if not self.is_admin(request):
-            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
-
-        try:
-            profile = Profile.objects.get(pk=pk)
-        except Profile.DoesNotExist:
-            return Response({'detail': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        user = profile.user
-        user.is_active = True
-        user.save()
-
-        serializer = self.get_serializer(profile)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    
-
-
-
-from django.http import HttpResponse,JsonResponse
-from rest_framework import response
-import requests
-
-def third_party_api(request):
-    context = requests.get('https://alfa-leetcode-api.onrender.com/anmamun0')
-    
-    return JsonResponse(data=context.json(),safe=False)
-
-
-
-
-# from django.http import HttpResponse,JsonResponse
-# from rest_framework import response,status
-# from rest_framework.decorators import api_view
-
-
-# @api_view(['GET'])
-# def third_party_api(request):
-#     return response.Response('Hello how are you',status=status.HTTP_200_OK)

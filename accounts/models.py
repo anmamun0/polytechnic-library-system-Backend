@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
-from .constaint import USER_ROLE,NATIONALITY
+from .constaint import USER_ROLE,NATIONALITY,STATUS_BLOOD
 
 # Create your models here.
 class Profile(models.Model):
@@ -15,6 +15,7 @@ class Profile(models.Model):
     department = models.CharField(max_length=12,null=True,blank=True)
     session = models.CharField(max_length=4,null=True,blank=True)
     address = models.CharField(max_length=100)
+    blood = models.CharField(choices=STATUS_BLOOD,max_length=10,null=True,blank=True)
 
     nationality_type = models.CharField(max_length=10,choices=NATIONALITY)
     nationality_number = models.CharField(max_length=17,unique=True)
