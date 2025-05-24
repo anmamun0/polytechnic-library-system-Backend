@@ -1,18 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
+from accounts.models import Profile
 from books.models import Book
 from datetime import date, timedelta
 
 from .constant import STATUS_CHOICES, STATUS_DUE
   
 class Transaction(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE,null=True)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    borrow_date = models.DateTimeField(auto_now_add=True)
+    request_date = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    due_date = models.IntegerField(choices=STATUS_DUE, default=7,null=True,blank=True) 
+
+    borrow_date = models.DateTimeField(null=True,blank=True)
     return_date = models.DateField(null=True, blank=True)
-    due_date = models.CharField(choices=STATUS_DUE, default=7,null=True,blank=True) 
-    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='borrowed')
-    test = models.DateTimeField(auto_now_add=True,blank=True,null=True)
+
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='pending') 
 
     # def calculate_fine(self):
     #     if not self.return_date:

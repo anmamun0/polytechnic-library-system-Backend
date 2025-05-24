@@ -149,7 +149,19 @@ headers: {
 | DELETE | `/category/<pk>/`   | Delete a category (admin)            | 
 
 
-  
+## 📚 Transaction APIs Endpoints
+
+| Method | Endpoint                 | Description                                                                 |
+|--------|--------------------------|-----------------------------------------------------------------------------|
+| GET    | `/transaction/`          | Get all transactions (admin token), or only the user's transactions (user token) |
+| GET    | `/transaction/<pk>/`     | Get a specific transaction (admin or the related user)                     |
+| POST   | `/transaction/`          | Create a new transaction request (authenticated user only)                 |
+| PATCH  | `/transaction/<pk>/`     | Admin-only: Update transaction to 'borrowed' status if book is available   |
+| DELETE | `/transaction/<pk>/`     | Admin-only: Delete a transaction                                            |
+
+##### Filter Tags:
+###### `profile`, `book__title`, `status`,`due_date`,`request_date`,`borrow_date`,`return_date`
+
  
 ### 🔍 Available Student Query Parameters (Filters)
 
@@ -267,4 +279,20 @@ Authorization: Token <your_token_here>
     "copies": 10,
     "available": 3
 }
+ ```
+
+
+ ## Transaction Model
+
+ ```json
+  {
+    "id": 0,
+    "profile": "string",
+    "request_date": "2025-05-24T20:41:41.172Z",
+    "due_date": 3,
+    "borrow_date": "2025-05-24T20:41:41.172Z",
+    "return_date": "2025-05-24",
+    "status": "pending",
+    "book": 0
+  }
  ```

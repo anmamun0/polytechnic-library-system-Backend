@@ -1,4 +1,5 @@
 STATUS_CHOICES = [
+        ('pending', 'pending'),
         ('borrowed', 'borrowed'),
         ('returned', 'returned'),
         ('overdue', 'overdue'),
