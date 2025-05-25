@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer, ReadOnlyField
 from .models import Transaction
 
 class TransactionSerilizers(ModelSerializer):
-    profile = ReadOnlyField(source='profile.user.username')  # Add this field
+    # profile = ReadOnlyField(source='profile.user.username')  # Add this field
 
     class Meta:
         model = Transaction

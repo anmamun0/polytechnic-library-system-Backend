@@ -10,6 +10,13 @@
 > Backend Engineers :  | `AN Mamun` <br> 
 > Frontend Engineers:  | `Amit`, `Wazid`, `Sami`, `Mustofa`, `Abdullah`, `Pracurjo`
 ---
+ 
+ 
+<h3> 
+  
+[  <code> Frontend Live </code>](https://spi-library.vercel.app/) [ <code> Fontend GitHub </code>](https://github.com/anmamun0/spi-library)  [ <code> Backend Live </code>](https://spi-library.onrender.com/)  [ <code> Backend GitHub </code>](https://github.com/anmamun0/polytechnic-library-system-Backend) 
+
+</h3>
 
 ### 🎯 System Purpose
 - To simplify the responsibilities of the library administrator
@@ -126,6 +133,11 @@ headers: {
 | POST   | `/user/profile/<pk>/activate/`       | Activate a deactivated profile (admin)(get-notification)  | [Example](#activate-profile) |
 
 
+##### Filters Tags:
+###### `?role=student` , `?phone=017XXXXXXXX`, `?email=user@example.com`, `?registration=123456`,  ` department=CSE`, `?session=20-21`, `?nationality_type=NID`, `?nationality_number=1234567890`, 
+
+
+
 ##  Books APIs Endpoints
 
 | Method | Endpoint        | Description                      |
@@ -135,6 +147,10 @@ headers: {
 | PUT    | `/book/books/<pk>/`    | Fully update a book (admin)      |
 | PATCH  | `/book/books/<pk>/`    | Partially update a book (admin)  |
 | DELETE | `/book/books/<pk>/`    | Delete a book (admin)            |
+
+
+##### Filters tags: 
+######   `title`,`author`, `isbn`, `language`, `category__name`
 
 
 ## Categories APIs Endpoints 
@@ -167,7 +183,6 @@ headers: {
 
 You can filter GET requests to endpoints , using the following query parameters:
 
-`?role=student` , `?phone=017XXXXXXXX`, `?email=user@example.com`, `?registration=123456`,  `?department=CSE`, `?session=20-21`, `?nationality_type=NID`, `?nationality_number=1234567890`, 
 
 <br>
 
