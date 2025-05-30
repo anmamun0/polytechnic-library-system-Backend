@@ -5,6 +5,7 @@ from .constaint import USER_ROLE,NATIONALITY,STATUS_BLOOD
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,null=True)
+    image = models.URLField(max_length=255,null=True,blank=True)
     full_name = models.CharField(max_length=100)
     role = models.CharField(max_length=10,choices=USER_ROLE,default='student')
     phone = models.CharField(max_length=14,unique=True)
