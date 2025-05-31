@@ -7,8 +7,7 @@
 
 
 ####  *– Contributors*
-> Backend Engineers :  | `AN Mamun` <br> 
-> Frontend Engineers:  | `Amit`, `Wazid`, `Sami`, `Mustofa`, `Abdullah`, `Pracurjo`
+> Developted Engineers :  | `AN Mamun` <br>  
 ---
  
  

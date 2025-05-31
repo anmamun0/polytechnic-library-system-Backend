@@ -21,8 +21,29 @@ from rest_framework.authentication import get_authorization_header
 class RegistrationView(APIView):
     serializer_class = RegistrationSerializer
     def post(self,request):
-        form = self.serializer_class(data=request.data)
+        data = request.data
+        duplicate_errors = {}
+
+        # Custom duplicate field validation BEFORE serializer.is_valid()
+        if User.objects.filter(username=data.get('username')).exists():
+            duplicate_errors['username'] = 'Username already exists.'
+        if User.objects.filter(email=data.get('email')).exists():
+            duplicate_errors['email'] = 'Email already exists.'
+        if Profile.objects.filter(phone=data.get('phone')).exists():
+            duplicate_errors['phone'] = 'Phone already exists.'
+        if Profile.objects.filter(roll=data.get('roll')).exists():
+            duplicate_errors['roll'] = 'Roll number already exists.'
+        if Profile.objects.filter(registration=data.get('registration')).exists():
+            duplicate_errors['registration'] = 'Registration number already exists.'
+        if Profile.objects.filter(nationality_number=data.get('nationality_number')).exists():
+            duplicate_errors['nationality_number'] = 'Nationality number already exists.'
+
+        if duplicate_errors: 
+            return Response({'duplicate_errors': duplicate_errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        form = self.serializer_class(data=request.data)  
         if form.is_valid(): 
+            print('inter form ')
             username = form._validated_data['username']
             full_name = form._validated_data['full_name']
             password = form._validated_data['password']
@@ -37,7 +58,7 @@ class RegistrationView(APIView):
             nationality_type = form._validated_data['nationality_type']
             nationality_number = form._validated_data['nationality_number']
             role = form._validated_data['role']
-
+  
             user =  User.objects.create_user(username=username,password=password,first_name=full_name,email=email)
             user.is_active = False
             user.save()
