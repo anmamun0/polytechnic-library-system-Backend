@@ -40,11 +40,16 @@ class UserLoginSerializer(serializers.Serializer):
  
 class ProfileSerializers(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
-    total_transactions_returned = serializers.SerializerMethodField()
+    total_book_read = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
-        fields =  "__all__"
-        
-    def get_total_transactions_returned(self, obj):
+        fields = "__all__"
+
+    def get_total_book_read(self, obj):
         return obj.profile_transactions.filter(status='returned').count()
+
+    def get_rating(self, obj):
+        total = self.get_total_book_read(obj)
+        return min(5, int((total / 100) * 5))  # ensure max rating is 5
