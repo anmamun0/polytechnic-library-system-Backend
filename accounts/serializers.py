@@ -40,8 +40,11 @@ class UserLoginSerializer(serializers.Serializer):
  
 class ProfileSerializers(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
-  
+    total_transactions_returned = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
         fields =  "__all__"
+        
+    def get_total_transactions_returned(self, obj):
+        return obj.profile_transactions.filter(status='returned').count()

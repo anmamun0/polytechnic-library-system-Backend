@@ -3,6 +3,8 @@ from .models import Transaction
 
 class TransactionSerilizers(ModelSerializer):
     # profile = ReadOnlyField(source='profile.user.username')  # Add this field
+    book = ReadOnlyField(source='book.isbn')  # Add this field
+
 
     class Meta:
         model = Transaction

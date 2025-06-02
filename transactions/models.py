@@ -7,8 +7,8 @@ from datetime import date, timedelta
 from .constant import STATUS_CHOICES, STATUS_DUE
   
 class Transaction(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE,null=True)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE,null=True,related_name='profile_transactions')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE,related_name="book_transactions")
     request_date = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     due_date = models.IntegerField(choices=STATUS_DUE, default=7,null=True,blank=True) 
 

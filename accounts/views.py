@@ -67,7 +67,7 @@ class RegistrationView(APIView):
             from core.emails import Registration_received
             Registration_received(user,profile)
             
-            return Response("Sended Data",status=status.HTTP_201_CREATED)
+            return Response({'success':'Sended Data'},status=status.HTTP_201_CREATED)
         
         return Response("Error",status=status.HTTP_502_BAD_GATEWAY)
     

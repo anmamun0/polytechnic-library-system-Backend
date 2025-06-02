@@ -20,6 +20,8 @@ class Profile(models.Model):
 
     nationality_type = models.CharField(max_length=10,choices=NATIONALITY)
     nationality_number = models.CharField(max_length=17,unique=True)
+ 
+
 
     def __str__(self):
         return f"{self.roll} - {self.session}"
