@@ -17,13 +17,11 @@ class TransactionSerilizers(ModelSerializer):
             return None
 
         if not obj.borrow_date or not obj.return_date:
-            return None  # Missing dates, can't calculate
-
+            return None  # Missing dates, can't calculate 
         today = date.today()
         start_date = obj.borrow_date
         end_date = obj.return_date
         due_date = obj.due_date #its int days of for borrowed
         # Days remaining (or overdue if negative)
         delta_days = (end_date - today).days
-
         return int(delta_days)
