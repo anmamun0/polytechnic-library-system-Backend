@@ -227,9 +227,9 @@ Authorization: Token <your_token_here>
   "blood": "string",
   "gender":"MALE/FEMALE",
   "birthday":"Date",
-  "nationality_type": "nid/birth",
+  "nationality_type": "NID/BIRTH",
   "nationality_number": "string", unique
-  "role": "student/admin"
+  "role": "student/admin" // Default - student
 } 
 ```
 

@@ -46,7 +46,7 @@ class TransactionView(CustomAdminTokenCheckMixin,ModelViewSet):
             except Exception as e:
               return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
             
-    def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs): 
         auth_header = request.headers.get('Authorization')
         token_id = None
         if auth_header and auth_header.startswith('Token '):
@@ -64,15 +64,28 @@ class TransactionView(CustomAdminTokenCheckMixin,ModelViewSet):
             return Response({'detail': 'Invalid token'}, status=status.HTTP_403_FORBIDDEN)
 
         book_id = request.data.get('book')
-        due_date = request.data.get('due_date')
+        due_date = request.data.get('due_date') 
 
-        if not book_id or not due_date:
-            return Response({'detail': 'book and due_date are required'}, status=status.HTTP_400_BAD_REQUEST)
- 
         try:
             book = Book.objects.get(pk=book_id)
         except Book.DoesNotExist:
             return Response({'detail': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
+        # Check for existing transaction (pending or borrowed)
+
+        existing_transaction = Transaction.objects.filter(profile=profile,book=book,
+        status__in=["pending", "borrowed"]).first()
+
+        if existing_transaction:
+            if existing_transaction.status == "pending":
+                return Response({"error": "You already have a pending request for this book."},status=400)
+            elif existing_transaction.status == "borrowed":
+                return Response(
+                    {"error": "You are currently borrowing this book. Please return it before requesting again."},status=400)
+
+        if not book_id or not due_date:
+            return Response({'detail': 'book and due_date are required'}, status=status.HTTP_400_BAD_REQUEST)
+ 
+       
 
         transaction = Transaction.objects.create(profile=profile, book=book, due_date=due_date)
  

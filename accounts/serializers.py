@@ -42,6 +42,7 @@ class ProfileSerializers(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     total_book_read = serializers.SerializerMethodField()
     rating = serializers.SerializerMethodField()
+    last_login = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -53,3 +54,6 @@ class ProfileSerializers(serializers.ModelSerializer):
     def get_rating(self, obj):
         total = self.get_total_book_read(obj)
         return min(5, int((total / 100) * 5))  # ensure max rating is 5
+    
+    def get_last_login(self,obj):
+        return obj.user.last_login if obj.user else None
