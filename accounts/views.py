@@ -55,6 +55,8 @@ class RegistrationView(APIView):
             department = form._validated_data['department']
             address = form._validated_data['address']
             blood = form._validated_data['blood']
+            gender = form._validated_data['gender']
+            birthday = form._validated_data['birthday']
             nationality_type = form._validated_data['nationality_type']
             nationality_number = form._validated_data['nationality_number']
             role = form._validated_data['role']
@@ -62,7 +64,17 @@ class RegistrationView(APIView):
             user =  User.objects.create_user(username=username,password=password,first_name=full_name,email=email)
             user.is_active = False
             user.save()
-            profile = Profile.objects.create(user=user,full_name=full_name,phone=phone,email=email,roll=roll,registration=registration,session=session,department=department,address=address,blood=blood,nationality_type=nationality_type,nationality_number=nationality_number,role=role)
+            profile = Profile.objects.create(user=user,
+                                             full_name=full_name,
+                                             phone=phone,email=email,
+                                             roll=roll,registration=registration,
+                                             session=session,department=department,
+                                             address=address,blood=blood,
+                                             gender=gender,
+                                             birthday=birthday,
+                                             nationality_type=nationality_type,
+                                             nationality_number=nationality_number,
+                                             role=role)
             
             from core.emails import Registration_received
             Registration_received(user,profile)

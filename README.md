@@ -225,6 +225,8 @@ Authorization: Token <your_token_here>
   "department": "string",
   "address": "string",
   "blood": "string",
+  "gender":"MALE/FEMALE",
+  "birthday":"Date",
   "nationality_type": "nid/birth",
   "nationality_number": "string", unique
   "role": "student/admin"

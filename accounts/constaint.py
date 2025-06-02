@@ -7,7 +7,10 @@ NATIONALITY = (
     ('BIRTH','BIRTH'),
     ('NID','NID')
 )
-
+STATUS_GENDER = (
+    ('MALE','MALE'),
+    ('FEMALE','FEMALE')
+)
 STATUS_BLOOD = (
     ('A+','A+'),
     ('A-','A-'),
