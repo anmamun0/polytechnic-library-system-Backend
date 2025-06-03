@@ -99,6 +99,7 @@ This project provides authentication and admin dashboard APIs using Django REST 
 |--------|----------------------|------------------------|---------|
 | POST   | `/user/register/`    | Register a new user (get-notification)     |  [Example](#register-a-new-user)|
 | POST   | `/user/login/`       | Login and receive token|  [Example](#login-and-receive-token)|
+| POST   | `/user/admin_login/`       | Login and receive token|  [Example](#login-and-receive-token)|
 | POST   | `/user/logout/`      | Logout and delete token|  [Example](#logout-and-delete-token)|
 
 
@@ -237,7 +238,7 @@ Authorization: Token <your_token_here>
 
 ```json
 {
-  "username": "string",
+  "email": "string",
   "password": "string"
 }
 ```
@@ -308,7 +309,19 @@ Authorization: Token <your_token_here>
     "due_date": 3,
     "borrow_date": "2025-05-24T20:41:41.172Z",
     "return_date": "2025-05-24",
-    "status": "pending",
+    "status": "pending/borrowed/returned", // Default: pending
     "book": 0
+  }
+ ```
+
+  ## Transaction POST Method
+
+ ```json
+  body:{  
+    "due_date": "int", 
+    "book": "int"
+  }
+  headers {
+    "Authorization" : "Token 55a1266207cbd56c22a9e5fb508648dfda566e51"
   }
  ```

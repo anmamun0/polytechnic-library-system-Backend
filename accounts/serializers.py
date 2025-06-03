@@ -27,8 +27,7 @@ class UserLoginSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError("No user is registered with this email.")
         
-        user = authenticate(username=user.username, password=password)
-        print(user.username)
+        user = authenticate(username=user.username, password=password) 
 
         if not user:
             raise serializers.ValidationError("Invalid email or password.")

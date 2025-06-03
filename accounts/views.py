@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 # Create your views here.
 from rest_framework.views import APIView
 from rest_framework import viewsets
-
+from rest_framework.decorators import action
 from .serializers import RegistrationSerializer , UserLoginSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -101,7 +101,30 @@ class UserLoginView(APIView):
             }, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-  
+
+class AdminLoginView(APIView):
+    def post(self, request):
+        serializer = UserLoginSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            try:
+                profile = Profile.objects.get(user=user)
+            except Profile.DoesNotExist:
+                return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            if profile.role != 'admin':
+                return Response({"error": "Only admin users can log in here."}, status=status.HTTP_403_FORBIDDEN)
+
+            token, _ = Token.objects.get_or_create(user=user)
+            login(request, user)
+
+            return Response({
+                "token_id": token.key,
+                "profile_id": profile.id,
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserLogoutView(APIView):
     def post(self, request):
         auth_header = get_authorization_header(request).decode('utf-8')
@@ -120,8 +143,6 @@ class UserLogoutView(APIView):
         except Token.DoesNotExist:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
         
-
-
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
