@@ -154,7 +154,7 @@ from .filters import ProfileFilter
 
 class ProfileSerializerView(CustomAdminTokenCheckMixin, ModelViewSet):
     serializer_class = ProfileSerializers
-    queryset = Profile.objects.filter(user__is_active=True)
+    queryset = Profile.objects.filter()
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProfileFilter
 
@@ -164,15 +164,6 @@ class ProfileSerializerView(CustomAdminTokenCheckMixin, ModelViewSet):
         if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
             if not self.is_admin(request):
                 raise PermissionDenied(detail='Only admins can perform this action.')
-
-    @action(detail=False, methods=['get'], url_path='unactive')
-    def get_unactive_profiles(self, request):
-        if not self.is_admin(request):
-            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
-
-        profiles = Profile.objects.filter(user__is_active=False)
-        serializer = self.get_serializer(profiles, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'], url_path='activate')
     def activate_profile(self, request, pk=None):
@@ -185,12 +176,11 @@ class ProfileSerializerView(CustomAdminTokenCheckMixin, ModelViewSet):
             return Response({'detail': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
         
         user = profile.user
-
-        from core.emails import Account_verified
-        Account_verified(user,profile)
-        
         user.is_active = True
         user.save()
+
+        from core.emails import Account_verified
+        Account_verified(user,profile) 
         
         serializer = self.get_serializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)

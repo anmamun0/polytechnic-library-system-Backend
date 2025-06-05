@@ -42,6 +42,7 @@ class ProfileSerializers(serializers.ModelSerializer):
     total_book_read = serializers.SerializerMethodField()
     rating = serializers.SerializerMethodField()
     last_login = serializers.SerializerMethodField()
+    is_active = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -56,3 +57,5 @@ class ProfileSerializers(serializers.ModelSerializer):
     
     def get_last_login(self,obj):
         return obj.user.last_login if obj.user else None
+    def get_is_active(self,obj):
+        return obj.user.is_active if obj.user else None
