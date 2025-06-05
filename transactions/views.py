@@ -100,6 +100,11 @@ class TransactionView(CustomAdminTokenCheckMixin,ModelViewSet):
         # Step 2: Get transaction
         instance = self.get_object()
 
+        # ✅ Step 2.1: Check if related user is active (fetch Profile first)
+        profile = get_object_or_404(Profile, id=instance.profile_id)
+        if not profile.user.is_active:
+            return Response({'detail': 'The user associated with this transaction is deactivated.'}, status=status.HTTP_403_FORBIDDEN)
+
         # Step 3: Get status from request
         new_status = request.data.get('status')
         if not new_status:
