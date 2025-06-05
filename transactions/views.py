@@ -93,33 +93,55 @@ class TransactionView(CustomAdminTokenCheckMixin,ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def partial_update(self, request, *args, **kwargs):
-        # Step 3: Check admin access
+        # Step 1: Check admin access
         if not self.is_admin(request):
             return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
-        # Step 4: Get transaction
+        # Step 2: Get transaction
         instance = self.get_object()
 
-        # Step 5: Update fields
-        instance.status = 'borrowed'
-        instance.borrow_date = timezone.now()
+        # Step 3: Get status from request
+        new_status = request.data.get('status')
+        if not new_status:
+            return Response({'detail': 'Status is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         book = instance.book
-        if book.available <= 0:
-            return Response({'detail': 'Book is currently unavailable'})
 
-        # due_date is stored as an integer number of days
-        try:
-            days_due = int(instance.due_date)
-        except:
-            days_due = 7  # default fallback
+        # Step 4: Handle borrow
+        if new_status == 'borrowed':
+            if book.available <= 0:
+                return Response({'detail': 'Book is currently unavailable.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        instance.return_date = instance.borrow_date.date() + timedelta(days=days_due)
-        instance.save()
+            instance.status = 'borrowed'
+            instance.borrow_date = timezone.now()
 
-        book.available -= 1
-        book.save()
+            # Handle due date
+            try:
+                days_due = int(instance.due_date)
+            except (ValueError, TypeError):
+                days_due = 7  # default fallback
 
+            instance.return_date = instance.borrow_date.date() + timedelta(days=days_due)
+            instance.save()
+
+            book.available -= 1
+            book.save()
+
+        # Step 5: Handle return
+        elif new_status == 'returned':
+            if instance.status != 'borrowed':
+                return Response({'detail': 'This book is not currently borrowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            instance.status = 'returned' 
+            instance.save()
+
+            book.available += 1
+            book.save()
+
+        else:
+            return Response({'detail': 'Invalid status. Must be "borrowed" or "returned".'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Step 6: Respond
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
