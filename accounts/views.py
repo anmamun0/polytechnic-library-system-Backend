@@ -166,6 +166,7 @@ class ProfileSerializerView(CustomAdminTokenCheckMixin, ModelViewSet):
                 raise PermissionDenied(detail='Only admins can perform this action.')
 
     @action(detail=True, methods=['post'], url_path='activate')
+    
     def activate_profile(self, request, pk=None):
         if not self.is_admin(request):
             return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
