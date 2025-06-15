@@ -1,8 +1,8 @@
-#  Polytechnic Library Management System 
+#  Sylhet Polytechnic Library Management System 
 
-> `Team Name: SPI-EliteCoders ~(Sylhet Polytechnic Institute)`
+> `The Web Application For digitalize ~(Sylhet Polytechnic Institute) `
 
-> The Polytechnic Library Management System is a web-based solution primarily developed for Library Administrators to efficiently manage library operations such as book inventory, student membership, book issuing, and returns. It also facilitates controlled student access, ensuring accountability and streamlined management.
+> The Sylhet Polytechnic Library (**`spi`**) Management System is a web-based solution primarily developed for Library Administrators to efficiently manage library operations such as book inventory, student membership, book issuing, and returns. It also facilitates controlled student access, ensuring accountability and streamlined management.
 
 
 
