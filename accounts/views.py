@@ -45,6 +45,7 @@ class RegistrationView(APIView):
         if form.is_valid(): 
             print('inter form ')
             username = form._validated_data['username']
+            image = form._validated_data['image']
             full_name = form._validated_data['full_name']
             password = form._validated_data['password']
             phone = form._validated_data['phone']
@@ -65,6 +66,7 @@ class RegistrationView(APIView):
             user.is_active = False
             user.save()
             profile = Profile.objects.create(user=user,
+                                             image=image,
                                              full_name=full_name,
                                              phone=phone,email=email,
                                              roll=roll,registration=registration,
