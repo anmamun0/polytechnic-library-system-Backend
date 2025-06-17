@@ -42,6 +42,7 @@ class RegistrationView(APIView):
             return Response({'duplicate_errors': duplicate_errors}, status=status.HTTP_400_BAD_REQUEST)
 
         form = self.serializer_class(data=request.data)  
+        print('inter up')
         if form.is_valid(): 
             print('inter form ')
             username = form._validated_data['username']
@@ -60,7 +61,7 @@ class RegistrationView(APIView):
             birthday = form._validated_data['birthday']
             nationality_type = form._validated_data['nationality_type']
             nationality_number = form._validated_data['nationality_number']
-            role = form._validated_data['role']
+            role = form._validated_data.get('role') or "Student"
   
             user =  User.objects.create_user(username=username,password=password,first_name=full_name,email=email)
             user.is_active = False
