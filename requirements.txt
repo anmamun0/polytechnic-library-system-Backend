@@ -15,3 +15,5 @@ sslcommerz-lib==1.0  # Only if you're using this payment gateway
 pillow
 environ
 distlib
+requests
+beautifulsoup4
