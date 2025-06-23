@@ -67,4 +67,3 @@ class CategoryViewSet(CustomAdminTokenCheckMixin, ModelViewSet):
 #             return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
 #         return super().destroy(request, *args, **kwargs)
 
-
