@@ -16,4 +16,5 @@ pillow
 environ
 distlib
 requests
+
 beautifulsoup4
