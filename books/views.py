@@ -25,9 +25,10 @@ class BookViewSet(CustomAdminTokenCheckMixin, ModelViewSet):
         super().initial(request, *args, **kwargs) 
         # Only check admin for write operations (POST, PATCH)
         if request.method in ['POST', 'PATCH','PUT','DELETE']:
+            print("📥 Received POST data:", request.data)  # Log request body
             if not self.is_admin(request):
                 raise PermissionDenied(detail='Only admins can perform this action.')
-
+      
 
 class CategoryViewSet(CustomAdminTokenCheckMixin, ModelViewSet):
     queryset = Category.objects.all()
