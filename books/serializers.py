@@ -8,6 +8,13 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class BookSerializer(serializers.ModelSerializer):
     category = CategorySerializer(many=True, read_only=True)  # Read-only nested category
+      # Writable field for POST/PATCH using category IDs
+    category_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Category.objects.all(),
+        write_only=True
+    )
+    
     viewers_profile = serializers.SerializerMethodField()
     class Meta:
         model = Book

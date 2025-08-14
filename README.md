@@ -271,6 +271,23 @@ Authorization: Token <your_token_here>
         "nationality_number": "12345678909876543"
     }
 ```
+## Book 
+- POST Field example json data
+
+```json
+{
+  "image": "https://example.com/book.jpg",
+  "title": "The Example Book",
+  "author": "John Doe",
+  "isbn": "9781234567897",
+  "language": "English",
+  "description": "This is a sample book description.",
+  "copies": 10,
+  "available": 8,
+  "category_ids": [1, 2]
+}
+```
+
 
  ## Category
 ```json
