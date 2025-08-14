@@ -45,6 +45,11 @@ class UserLoginSerializer(serializers.Serializer):
             raise serializers.ValidationError({
                 "detail": "Invalid email or password. Please Try again"
             })
+        
+        if not user.is_active:
+            raise serializers.ValidationError({
+                "detail": "Your account is inactive. Please contact support."
+            })
 
         attrs['user'] = user
         return attrs
